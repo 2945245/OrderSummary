@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using OrderSummary.Data;
 
 namespace OrderSummary
 {
@@ -31,6 +32,9 @@ namespace OrderSummary
             {
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "OrderSummary", Version = "v1"});
             });
+            services.AddScoped<IInfoService, InfoService>();
+            services.AddScoped<IInfoService, InfoService>();
+            services.AddScoped<ISummaryService, SummaryService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

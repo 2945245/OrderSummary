@@ -1,0 +1,104 @@
+﻿@page "/OrderInformation"
+@using ClientApp.Models
+@using ClientApp.Data
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@using System.Net
+
+<PageTitle>OrderInformation</PageTitle>
+
+<h2>OrderInformation</h2>
+
+<p>Review your order. If you want to proceed to payment press "Place Order" else go back.</p>
+
+@if (orderInfo == null)
+{
+    <p>
+    <em>Loading...</em>
+    </p>
+}
+else
+{
+    <table class="table me-2">
+        <thead>
+        <tr>
+            <th>Items</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var forecast in orderInfo)
+        {
+            <tr>
+                <td>@forecast.Items</td>
+                <td>@forecast.Quantity</td>
+                <td>@forecast.Price</td>
+                <td>@forecast.Total</td>
+            </tr>
+        }
+        <h4>Total to pay</h4>
+        <br>
+        </tbody>
+
+    </table>
+
+    <h3>AddAdress</h3>
+
+    <EditForm Model="@addNewAdressItem" OnValidSubmit="@AddNewAdress">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+        <div class="form-group">Name:<br/>
+            <InputText @bind-Value="addNewAdressItem.Name"/>
+        </div>
+        <div class="form-group">Street: <br/>
+            <InputText @bind-Value="addNewAdressItem.Street"/>
+        </div>
+        <div class="form-group">Number: <br/>
+            <InputNumber @bind-Value="addNewAdressItem.Number"/>
+        </div>
+        <div class="form-group">Town: <br/>
+            <InputText @bind-Value="addNewAdressItem.Town"/>
+        </div>
+        <div class="form-group">Phone Number: <br/>
+            <InputNumber @bind-Value="addNewAdressItem.phoneNumber"/>
+        </div>
+        <p class="actions"><button class="btn btn-outline-dark" type="submit">Save</button></p>
+    </EditForm>
+
+    <div class="alert">
+        <span class="oi oi-cart me-2" aria-hidden="true"></span>
+        <strong>@Summary</strong>
+
+        <span class="text-nowrap">
+            <a target="_blank" class="font-weight-bold link-dark" href="https://www.paypal.com/dk/home">Place Order</a>
+        </span>
+    </div>
+
+
+
+
+@code {
+    private Summary[]? orderInfo;
+    private InfoOrder[]? infoOrder;
+    private InfoOrder addNewAdressItem = new InfoOrder();
+
+    private void AddNewAdress()
+    {
+        InfoService.AddInfoOrderAsync(addNewAdressItem);
+        NavigationManager.NavigateTo("/infoOrder");
+    }
+
+    /*protected override async Task OnInitializedAsync()
+    {
+        orderInfo = await WebRequestMethods.Http.GetFromJsonAsync()<Summary>("orderInfo.json");
+        infoOrder = await WebRequestMethods.Http.GetFromJsonAsync()<InfoOrder>("item.json");
+        //orderInfo =  (Summary[]?) SummaryService.GetSummaryAsync();
+    }*/
+    // Demonstrates how a parent component can supply parameters
+    [Parameter]
+    public string? Summary { get; set; }
+
+}
+}
